@@ -1,0 +1,32 @@
+button {
+    transition-duration: 0.5s;
+    height: 30px;
+    background-color:#1976d2;
+    color:#ffffff;
+    border-radius: 5px;
+    font: inherit;
+}
+
+
+button:hover {
+    background-color:#7bd6ed;
+    color: black;
+    transition-duration: 0.7s;
+}
+
+
+select {
+    font-family: inherit;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  option {
+    font-size: 16px;
+    background-color: white;
+    color: black;
+  }
+  
