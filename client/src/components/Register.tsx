@@ -1,32 +1,38 @@
 import { useState } from "react"
 import { Box, Button, TextField, Checkbox } from "@mui/material"
 
-// fetch function to send data to the backend and get validation errors
+// Put your backend API base URL here or use environment variables like import.meta.env.VITE_API_BASE_URL
+const API_BASE_URL = "http://localhost:1234" // change this to your deployed backend URL in production
+
 const fetchData = async (email: string, password: string, isAdmin: boolean) => {
   try {
-    const response = await fetch("/api/user/register", {
+    const response = await fetch(`${API_BASE_URL}/api/user/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password, isAdmin }), // send email, password and admin status to the backend
+      body: JSON.stringify({ email, password, isAdmin }),
     })
+
     const data = await response.json()
 
     console.log(data)
-    // handle errors and build error object
-    const errors: { [key: string]: string } = {} // error object (i know this is horrid). 
-    // stores error messages with keys. key is a string e.g. email, password and value is a string with the error message
 
-    if (!response.ok && data.errors) { // mount errors that come from backend to the error object
-      data.errors.forEach((error: { path: string, msg: string }) => // loop through the errors array from the backend
-        errors[String(error.path)] = error.msg // my eyes ;__; // store errors in the error object
-      )
-    } else { // if registering is successful, redirect user to login part
+    const errors: { [key: string]: string } = {}
+
+    if (!response.ok && data.errors) {
+      data.errors.forEach((error: { path: string; msg: string }) => {
+        errors[String(error.path)] = error.msg
+      })
+    } else if (!response.ok) {
+      // If backend sends a general error but no validation errors array
+      errors.general = data.message || "Registration failed."
+    } else {
+      // Successful registration - redirect to login page
       window.location.href = "/login"
     }
-    return errors
 
+    return errors
   } catch (error) {
     return { general: "Server error. Please try again later." }
   }
@@ -37,21 +43,17 @@ const Register = () => {
   const [password, setPassword] = useState("")
   const [isAdmin, setIsAdmin] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [errors, setErrors] = useState<{ email?: string, password?: string, confirmPassword?: string, general?: string }>({})
+  const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string; general?: string }>({})
 
-  const handleSubmit = async () => { // function to handle submitting, i thought this was clever with the errors and all
-    setErrors({}) // reset errors before submitting
+  const handleSubmit = async () => {
+    setErrors({})
 
-    // check if passwords match
     if (password !== confirmPassword) {
       setErrors({ confirmPassword: "Passwords do not match." })
-      return // don't submit if passwords don't match
+      return
     }
 
-    // call the fetchData function to get validation errors
     const validationErrors = await fetchData(email, password, isAdmin)
-
-    // update the error state with any errors returned from the backend
     if (validationErrors) {
       setErrors(validationErrors)
     }
@@ -61,7 +63,7 @@ const Register = () => {
     <div className="registerDiv">
       <h2>rekister öidy :</h2>
       <Box
-        component="form" // form type
+        component="form"
         sx={{
           alignItems: "center",
           display: "flex",
@@ -69,7 +71,6 @@ const Register = () => {
           "& .MuiTextField-root": { m: 1, width: "25ch" },
         }}
         noValidate
-
       >
         <TextField
           required
@@ -77,30 +78,29 @@ const Register = () => {
           label="Email"
           value={email}
           size="small"
-          error={!!errors.email} // show error for email if there is one
-          helperText={errors.email} // display the error message for email
+          error={!!errors.email}
+          helperText={errors.email}
           sx={{
-            input: { fontFamily: "Courier New, monospace", fontSize: "16px", color: "white" }, // styling
-            label: { fontFamily: "Courier New, monospace", fontSize: "16px", color: "black" }, // styling
+            input: { fontFamily: "Courier New, monospace", fontSize: "16px", color: "white" },
+            label: { fontFamily: "Courier New, monospace", fontSize: "16px", color: "black" },
           }}
-          onChange={(e) => setEmail(e.target.value)} // when this text field is changed i.e user is typing on it, setEmail to the value which is being written
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <TextField
-          className="textField"
           required
           id="password"
           label="Password"
           type="password"
-          error={!!errors.password} // show error for password if there is one
-          helperText={errors.password} // display the error message for password
+          error={!!errors.password}
+          helperText={errors.password}
           value={password}
           size="small"
           sx={{
             input: { fontFamily: "Courier New, monospace", fontSize: "16px", color: "white" },
             label: { fontFamily: "Courier New, monospace", fontSize: "16px", color: "black" },
           }}
-          onChange={(e) => setPassword(e.target.value)} // when this text field is changed i.e user is typing on it, setPassword to the value which is being written
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <TextField
@@ -110,8 +110,8 @@ const Register = () => {
           type="password"
           value={confirmPassword}
           size="small"
-          error={!!errors.confirmPassword} // show error if passwords don't match
-          helperText={errors.confirmPassword} // display the error message for confirm password
+          error={!!errors.confirmPassword}
+          helperText={errors.confirmPassword}
           sx={{
             input: { fontFamily: "Courier New, monospace", fontSize: "16px", color: "white" },
             label: { fontFamily: "Courier New, monospace", fontSize: "16px", color: "black" },
@@ -119,20 +119,16 @@ const Register = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
-        {errors.general && <p style={{ color: "red" }}>{errors.general}</p>} {/* general error message */}
+        {errors.general && <p style={{ color: "red" }}>{errors.general}</p>}
 
         <label>are you an admin?</label>
-        <Checkbox
-          checked={isAdmin}
-          onChange={(e) => setIsAdmin(e.target.checked)} // when this text field is changed i.e user presses it, setIsAdmin is set to true
-          name="isAdmin"
-        />
+        <Checkbox checked={isAdmin} onChange={(e) => setIsAdmin(e.target.checked)} name="isAdmin" />
 
         <Button
           variant="contained"
-          sx={{ width: "10ch", m: 0.5, textTransform: "none", fontFamily: "Courier New, Courier, monospace" }}
+          sx={{ width: "10ch", m: 0.5, textTransform: "none", fontFamily: "Courier New, monospace" }}
           color="primary"
-          onClick={handleSubmit} // button to register; runs handleSubmit which runs fetchData
+          onClick={handleSubmit}
         >
           register
         </Button>

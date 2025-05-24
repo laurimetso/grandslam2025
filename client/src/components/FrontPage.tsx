@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import "../styles/board.css"
 import { Button, TextField, Typography } from "@mui/material"
-import { jwtDecode } from "jwt-decode"
+import * as jwtDecode from "jwt-decode" // Import all as jwtDecode
 
 interface Player {
   _id: string
@@ -9,16 +10,17 @@ interface Player {
   points: number
 }
 
+const Kanban = () => {
+  const navigate = useNavigate()
 
-const registerRedirect = () => {
-  window.location.href = "/register"
-}
+  const registerRedirect = () => {
+    navigate("/register")
+  }
 
-const loginRedirect = () => {
-  window.location.href = "/login"
-}
+  const loginRedirect = () => {
+    navigate("/login")
+  }
 
-const kanban = () => {
   const [jwt, setJwt] = useState<string | null>(null)
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const [players, setPlayers] = useState<Player[]>([])
@@ -28,7 +30,8 @@ const kanban = () => {
     const token = localStorage.getItem("jwt") || localStorage.getItem("token")
     if (token) {
       try {
-        const decoded: any = jwtDecode(token)
+        // Use jwtDecode.default because of import style
+        const decoded: any = jwtDecode.default(token)
         setIsAdmin(decoded.isAdmin)
         setJwt(token)
       } catch (err) {
@@ -80,15 +83,20 @@ const kanban = () => {
       <h1>grande slame 2025</h1>
       {jwt ? (
         <div>
-          <Typography variant="h5"  sx={{
+          <Typography
+            variant="h5"
+            sx={{
               width: "10ch",
               m: 0.5,
               textTransform: "none",
               fontFamily: "Courier New, Courier, monospace",
-            }}>
+            }}
+          >
             Pistetaulukko
           </Typography>
-          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "2rem" }}>
+          <table
+            style={{ width: "100%", borderCollapse: "collapse", marginBottom: "2rem" }}
+          >
             <thead>
               <tr>
                 <th style={{ border: "1px solid #ccc", padding: "8px" }}>Pelaaja</th>
@@ -169,4 +177,4 @@ const kanban = () => {
   )
 }
 
-export default kanban
+export default Kanban

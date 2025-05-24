@@ -1,17 +1,16 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
-  base: '/grandslam2025/', // 👈 Required for GitHub Pages
+  base: '/grandslam2025/',  // <-- THIS IS THE KEY
   plugins: [react()],
   server: {
     proxy: {
       '/api': {
         target: 'http://localhost:1234',
-        changeOrigin: true,
-      },
+        changeOrigin: true
+      }
     },
-    port: 3000,
-  },
-});
+    port: 3000
+  }
+})
