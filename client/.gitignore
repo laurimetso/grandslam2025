@@ -24,3 +24,25 @@ dist-ssr
 *.sw?
 
 .env
+
+# dependencies
+/node_modules
+
+# production build
+/dist
+
+# local env files
+.env
+.env.*.local
+
+# testing
+/coverage
+*.log
+
+# IDEs and editors
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
