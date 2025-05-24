@@ -83,7 +83,7 @@ router.post("/login", async (req, res) => {
     }
     catch (error) {
         console.error(`Error during user login: ${error}`);
-        return res.status(500).json({ error: `Internal server error` });
+        return res.status(500).json({ error: `VITTU NISTI SAATANA server error` });
     }
 });
 exports.default = router;

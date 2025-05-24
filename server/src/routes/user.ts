@@ -101,7 +101,7 @@ router.post("/login",
 
         } catch(error: any) {
             console.error(`Error during user login: ${error}`)
-            return res.status(500).json({ error: `Internal server error`})
+            return res.status(500).json({ error: `VITTU NISTI SAATANA server error`})
         }
     }
 )

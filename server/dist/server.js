@@ -15,29 +15,33 @@ const card_1 = __importDefault(require("./src/routes/card"));
 dotenv_1.default.config(); // load variables from .env
 const app = (0, express_1.default)(); // express app
 const port = Number(process.env.PORT) || 1234; // set port from .env or 1234
-// if environment is developement, configure CORS
+// If environment is development, configure CORS
 if (process.env.NODE_ENV === 'development') {
     const corsOptions = {
         origin: 'http://localhost:3000', // allow requests from the frontend at localhost:3000
         optionsSuccessStatus: 200,
     };
-    app.use((0, cors_1.default)(corsOptions)); // enable cors
+    app.use((0, cors_1.default)(corsOptions)); // enable CORS
 }
-// mongoDB setup
-const mongoDB = "mongodb://localhost:27017/testdb"; // mongoDB url
-mongoose_1.default.connect(mongoDB); // connect to database
+// MongoDB setup
+const mongoDB = process.env.MONGODB_URI || "mongodb://localhost:27017/testdb"; // MongoDB URL
+mongoose_1.default.connect(mongoDB); // connect to the database
 mongoose_1.default.Promise = Promise; // set mongoose to use promises for async
-const db = mongoose_1.default.connection; // mongodb connection instance
-db.on("error", console.error.bind(console, "MongoDB connection error")); // error handling for mongodb connection
+const db = mongoose_1.default.connection; // MongoDB connection instance
+db.on("error", console.error.bind(console, "MongoDB connection error")); // error handling for MongoDB connection
 app.use(express_1.default.json()); // parse incoming requests with JSON payloads
 app.use((0, morgan_1.default)("dev")); // log HTTP requests in dev format
-app.use(express_1.default.static(path_1.default.join(__dirname, "../public"))); // serve files from public folder
-// route handlers
-app.use("/api/user", user_1.default); // user related routes
-app.use("/api/columns", column_1.default); // column related routes
-app.use("/api/cards", card_1.default); // column related routes
-app.use("/api/users", user_1.default);
-// start server and listen on the specified port
+app.use(express_1.default.static(path_1.default.join(__dirname, "../public"))); // serve files from the public folder
+// Route handlers
+app.use("/api/user", user_1.default); // user-related routes
+app.use("/api/columns", column_1.default); // column-related routes
+app.use("/api/cards", card_1.default); // card-related routes
+// Error handling middleware (optional but recommended)
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+});
+// Start server and listen on the specified port
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

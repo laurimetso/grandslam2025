@@ -3,23 +3,12 @@ import "../styles/board.css"
 import { Button, TextField, Typography } from "@mui/material"
 import { jwtDecode } from "jwt-decode"
 
-interface Column {
-  _id: string
-  title: string
-}
-
 interface Player {
   _id: string
   email: string
   points: number
 }
 
-interface KanbanCard {
-  _id: string
-  title: string
-  description: string
-  columnId: string
-}
 
 const registerRedirect = () => {
   window.location.href = "/register"

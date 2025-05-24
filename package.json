@@ -2,6 +2,7 @@
   "name": "fullstack",
   "version": "1.0.0",
   "main": "index.js",
+  "homepage": "https://yourusername.github.io/your-repo-name",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -12,10 +13,12 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
+    "gh-pages": "^6.3.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "mongoose": "^8.11.0",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.2",
     "path": "^0.12.7",
     "react": "^19.0.0",
     "react-router-dom": "^7.2.0"
@@ -26,13 +29,16 @@
     "server": "cd server && npm run start",
     "client": "cd client && npm run dev",
     "install": "cd client && npm install",
-    "dev:client": "cd client && npm run dev"
+    "dev:client": "cd client && npm run dev",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.12",
     "concurrently": "^9.1.2"
   }
 }
